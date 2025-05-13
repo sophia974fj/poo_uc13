@@ -1,34 +1,21 @@
+
 <?php
- 
-class login {
-    public $nome;
-    private $senha;
-    
- 
-    // Construtor com validação
-    public function __construct($nome, $senha) {
-        if (empty($nome)) {
-            throw new Exception("O campo Nome é obrigatório.");
-        }
+require_once 'Usuario.php';
 
-        if (empty($senha)) {
-            throw new Exception("O campo Senha é obrigatório.");
-        }
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $email = $_POST['usuario'];
+    $senha = $_POST['senha'];
 
+    $usuario = new Usuario();
 
-        $this->nome = $nome;
-        $this->senha = $senha;
-
-    }
- 
-    // Getter do CPF (encapsulamento)
-    public function getSenha() {
-        return $this->senha;
-    }
- 
-    // Método para exibir os dados
-    public function exibirDados() {
-        echo "<p>Nome: <strong>$this->nome</strong><br>";
-        echo "Senha: <strong>" . $this->getSenha() . "</strong></p>";
+    if ($usuario->validarLogin($email, $senha)) {
+        // Iniciar sessão e redirecionar
+        session_start();
+        $_SESSION['usuario'] = $email;
+        header("Location: dashboard.php");
+        exit;
+    } else {
+        echo "<script>alert('E-mail ou senha inválidos!'); window.location.href='index.php';</script>";
     }
 }
+?>
