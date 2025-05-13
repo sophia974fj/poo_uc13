@@ -1,21 +1,22 @@
 
 <?php
-require_once 'Usuario.php';
-
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $email = $_POST['usuario'];
-    $senha = $_POST['senha'];
-
-    $usuario = new Usuario();
-
-    if ($usuario->validarLogin($email, $senha)) {
-        // Iniciar sessão e redirecionar
-        session_start();
-        $_SESSION['usuario'] = $email;
-        header("Location: dashboard.php");
-        exit;
+ 
+include 'src/class/usuario.php';
+ 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = $_POST['usuario'] ?? '';
+    $senha = $_POST['senha'] ?? '';
+ 
+    $usuarioObj = new usuario();
+    $usuario = $usuarioObj->autenticar($email, $senha);
+ 
+    if ($usuario) {
+        $_SESSION['usuario_id'] = $usuario['id'];
+        $_SESSION['usuario_nome'] = $usuario['email'];
+        header("Location: /poo");
+        exit();
     } else {
-        echo "<script>alert('E-mail ou senha inválidos!'); window.location.href='index.php';</script>";
+        echo "Login inválido!";
     }
 }
 ?>
